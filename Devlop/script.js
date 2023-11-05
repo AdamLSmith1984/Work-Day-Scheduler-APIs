@@ -1,80 +1,58 @@
-// updates time on the webpage
-$(function updateTime() {
-    let today = moment();
+// Instructs engine to load the HTML and CSS before running the JS
+$(document).ready(function () {
 
-    //updates the time element in the header
-    $("currentDay").text(today.format("dddd, MMMM Do YYYY, h:mm.ss"));
+    // Create a variable and use query selector to display current date and time
+    const displayTime = document.querySelector("#currentDay");
 
-    // For coloring the past, present, and future time blocks
-    let now = moment().format("kk");
-    for (let i = 0; i < scheduleElArray.length; i++) {
-        scheduleElArray[i].removeClass("future past present");
+    // Use dayjs to display current date and time in given format
+    const currentTime = dayjs().format("dddd, MMMM D, YYYY, h:mm:ss a");
 
-        if (now > scheduleElArray[i].data("hour")) {
-            scheduleElArray[i].addClass("past");
+    displayTime.textContent = currentTime;
 
-        } else if (now === scheduleElArray[i].attr("data-hour")) {
-            scheduleElArray[i].addClass("present");
+    // Assign saveBtn click listener for user input and get row id and save to local storage
+    $(".saveBtn").on("click", function () {
+        const text = $(this).siblings(".description").val();
+        const time = $(this).parent().attr("id");
 
-        } else {
+        // Save text in local storage
+        localStorage.setItem(time, text);
+    });
 
-            scheduleElArray[i].addClass("future");
-        }
+    function hourTracker() {
+        // Get current number of hours.
+        const currentHour = dayjs().hour();
+
+        // Loop over time blocks
+        $(".time-block").each(function () {
+            const blockHour = parseInt($(this).attr("id").split("-")[1]);
+
+            // Check the time and add the classes for background indicators
+            if (blockHour < currentHour) {
+                $(this).addClass("past");
+            } else if (blockHour === currentHour) {
+                $(this).removeClass("past");
+                $(this).addClass("present");
+            } else {
+                $(this).removeClass("past");
+                $(this).removeClass("present");
+                $(this).addClass("future");
+            }
+        });
     }
+    hourTracker();
+
+    // Create a function to loop over time blocks to retrieve and display data from local storage
+    function displayText() {
+        // Loop over time blocks
+        $(".time-block").each(function () {
+            // const blockHour = parseInt($(this).attr("id").split("-")[1]);
+            const blockHour = $(this).attr("id");
+            $(this).children(".description").val(localStorage.getItem(blockHour));
+        });
+    }
+    displayText();
+
 });
-
-// textarea elements
-let saveBttn = $(".save-icon");
-let containerEl = $(".container");
-let schedule9am = $("#9AM");
-let schedule10am = $("#10AM");
-let schedule11am = $("#11AM");
-let schedule12pm = $("#12PM");
-let schedule1pm = $("#1PM");
-let schedule2pm = $("#2PM");
-let schedule3pm = $("#3PM");
-let schedule4pm = $("#4PM");
-let schedule5pm = $("#5PM");
-
-let scheduleElArray = [
-    schedule9am,
-    schedule10am,
-    schedule11am,
-    schedule12pm,
-    schedule1pm,
-    schedule2pm,
-    schedule3pm,
-    schedule4pm,
-    schedule5pm,
-];
-
-renderLastRegistered();
-updateTime();
-setInterval(updateTime, 1000);
-
-// render schedule saved in local storage
-function renderLastRegistered() {
-    for (let el of scheduleElArray) {
-        el.val(localStorage.getItem("time block " + el.data("hour")));
-
-    }
-}
-
-
-// function for handling clicks
-function handleFormSubmit(event) {
-    event.preventDefault();
-
-    let btnClicked = $(event.currentTarget);
-
-    let targetText = btnClicked.siblings("textarea");
-
-    let targetTimeBlock = targetText.data("hour");
-
-    localStorage.setItem("time block " + targetTimeBlock, targetText.val());
-}
-
-saveBttn.on("click", handleFormSubmit);
 
 // TODO: Add a listener for click events on the save button. This code should
 // use the id in the containing time-block as a key to save the user input in
@@ -94,5 +72,6 @@ saveBttn.on("click", handleFormSubmit);
 // attribute of each time-block be used to do this?
 //
 // TODO: Add code to display the current date in the header of the page.
+
 
 
