@@ -17,10 +17,10 @@
 
 ## Screen Shot
 
-![Preview of Web APIs Code Quiz]()
+![Preview of Web APIs Code Quiz](./Images/Screenshot%202023-11-06%20131947.png)
 
 # Links
 
 [Github Repo](https://github.com/AdamLSmith1984/Work-Day-Scheduler-APIs.git)
 
-[Deployed GitHub-Pages Site]()
+[Deployed GitHub-Pages Site](https://adamlsmith1984.github.io/Work-Day-Scheduler-APIs/)
